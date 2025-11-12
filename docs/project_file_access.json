@@ -2,46 +2,46 @@
   "project_name": "invoice-editor",
   "description": "Invoice Editor - ISDOC approval and NEX Genesis integration",
   "repository": "https://github.com/rauschiccsk/invoice-editor",
-  "generated_at": "2025-11-12T12:35:00.261643",
-  "commit_sha": "af762e4a5f564f627bf895ecab8ec487ad67c719",
-  "cache_buster": "af762e4a5f564f627bf895ecab8ec487ad67c719",
-  "cache_version": "af762e4a5f56",
-  "base_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719",
+  "generated_at": "2025-11-12T16:36:31.588359",
+  "commit_sha": "9b7786785445df2fd2c50c68e2f8d04e12959764",
+  "cache_buster": "9b7786785445df2fd2c50c68e2f8d04e12959764",
+  "cache_version": "9b7786785445",
+  "base_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764",
   "quick_access": {
     "init_files": [
       {
         "name": "INIT_PROMPT_NEW_CHAT.md",
         "description": "Init prompt for new session - load this first",
-        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/INIT_PROMPT_NEW_CHAT.md?v=af762e4a5f56"
+        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/INIT_PROMPT_NEW_CHAT.md?v=9b7786785445"
       },
       {
         "name": "SESSION_NOTES.md",
         "description": "Current session progress and status",
-        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/SESSION_NOTES.md?v=af762e4a5f56"
+        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/SESSION_NOTES.md?v=9b7786785445"
       }
     ],
     "core_modules": [
       {
         "name": "src/btrieve/btrieve_client.py",
         "description": "Btrieve database client (from nex-genesis-server)",
-        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/btrieve/btrieve_client.py?v=af762e4a5f56"
+        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/btrieve/btrieve_client.py?v=9b7786785445"
       },
       {
         "name": "src/database/postgres_client.py",
         "description": "PostgreSQL staging database client",
-        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/database/postgres_client.py?v=af762e4a5f56"
+        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/database/postgres_client.py?v=9b7786785445"
       },
       {
         "name": "main.py",
         "description": "Application entry point",
-        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/main.py?v=af762e4a5f56"
+        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/main.py?v=9b7786785445"
       }
     ],
     "database": [
       {
         "name": "database/schemas/001_initial_schema.sql",
         "description": "PostgreSQL staging database schema",
-        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/database/schemas/001_initial_schema.sql?v=af762e4a5f56"
+        "url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/database/schemas/001_initial_schema.sql?v=9b7786785445"
       }
     ]
   },
@@ -64,22 +64,46 @@
     "tests": "Test suite and fixtures"
   },
   "statistics": {
-    "total_files": 19,
+    "total_files": 35,
     "by_category": {
       "root_modules": 1,
-      "documentation": 5,
-      "python_sources": 9,
+      "documentation": 8,
+      "python_sources": 16,
       "ui_resources": 0,
-      "configuration": 1,
-      "database_schemas": 0,
-      "tests": 3
+      "configuration": 2,
+      "database_schemas": 2,
+      "tests": 6
     },
     "generated_by": "generate_project_access.py"
   },
   "files": [
     {
+      "path": "config/config.yaml",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/config/config.yaml?v=9b7786785445",
+      "size": 672,
+      "extension": ".yaml",
+      "name": "config.yaml",
+      "category": "configuration"
+    },
+    {
+      "path": "database/schemas/001_initial_schema.sql",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/database/schemas/001_initial_schema.sql?v=9b7786785445",
+      "size": 20569,
+      "extension": ".sql",
+      "name": "001_initial_schema.sql",
+      "category": "database_schemas"
+    },
+    {
+      "path": "database/schemas/test_schema.sql",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/database/schemas/test_schema.sql?v=9b7786785445",
+      "size": 11573,
+      "extension": ".sql",
+      "name": "test_schema.sql",
+      "category": "database_schemas"
+    },
+    {
       "path": "docs/INIT_PROMPT_NEW_CHAT - Session 1.md",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/docs/INIT_PROMPT_NEW_CHAT - Session 1.md?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/INIT_PROMPT_NEW_CHAT - Session 1.md?v=9b7786785445",
       "size": 12265,
       "extension": ".md",
       "name": "INIT_PROMPT_NEW_CHAT - Session 1.md",
@@ -87,23 +111,39 @@
     },
     {
       "path": "docs/INIT_PROMPT_NEW_CHAT - Session 2.md",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/docs/INIT_PROMPT_NEW_CHAT - Session 2.md?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/INIT_PROMPT_NEW_CHAT - Session 2.md?v=9b7786785445",
       "size": 11377,
       "extension": ".md",
       "name": "INIT_PROMPT_NEW_CHAT - Session 2.md",
       "category": "documentation"
     },
     {
+      "path": "docs/INIT_PROMPT_NEW_CHAT - Session 3.md",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/INIT_PROMPT_NEW_CHAT - Session 3.md?v=9b7786785445",
+      "size": 10974,
+      "extension": ".md",
+      "name": "INIT_PROMPT_NEW_CHAT - Session 3.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/INIT_PROMPT_NEW_CHAT.md",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/docs/INIT_PROMPT_NEW_CHAT.md?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/INIT_PROMPT_NEW_CHAT.md?v=9b7786785445",
       "size": 7358,
       "extension": ".md",
       "name": "INIT_PROMPT_NEW_CHAT.md",
       "category": "documentation"
     },
     {
+      "path": "docs/POSTGRESQL_SETUP.md",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/POSTGRESQL_SETUP.md?v=9b7786785445",
+      "size": 8734,
+      "extension": ".md",
+      "name": "POSTGRESQL_SETUP.md",
+      "category": "documentation"
+    },
+    {
       "path": "docs/README.md",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/docs/README.md?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/README.md?v=9b7786785445",
       "size": 44,
       "extension": ".md",
       "name": "README.md",
@@ -111,15 +151,23 @@
     },
     {
       "path": "docs/SESSION_NOTES.md",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/docs/SESSION_NOTES.md?v=af762e4a5f56",
-      "size": 11577,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/SESSION_NOTES.md?v=9b7786785445",
+      "size": 13993,
       "extension": ".md",
       "name": "SESSION_NOTES.md",
       "category": "documentation"
     },
     {
+      "path": "docs/database/TYPE_MAPPINGS.md",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/docs/database/TYPE_MAPPINGS.md?v=9b7786785445",
+      "size": 6336,
+      "extension": ".md",
+      "name": "TYPE_MAPPINGS.md",
+      "category": "documentation"
+    },
+    {
       "path": "main.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/main.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/main.py?v=9b7786785445",
       "size": 661,
       "extension": ".py",
       "name": "main.py",
@@ -127,15 +175,15 @@
     },
     {
       "path": "requirements.txt",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/requirements.txt?v=af762e4a5f56",
-      "size": 218,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/requirements.txt?v=9b7786785445",
+      "size": 1443,
       "extension": ".txt",
       "name": "requirements.txt",
       "category": "configuration"
     },
     {
       "path": "scripts/generate_project_access.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/scripts/generate_project_access.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/scripts/generate_project_access.py?v=9b7786785445",
       "size": 12208,
       "extension": ".py",
       "name": "generate_project_access.py",
@@ -143,23 +191,31 @@
     },
     {
       "path": "src/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/__init__.py?v=af762e4a5f56",
-      "size": 30,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/__init__.py?v=9b7786785445",
+      "size": 513,
       "extension": ".py",
       "name": "__init__.py",
       "category": "python_sources"
     },
     {
       "path": "src/btrieve/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/btrieve/__init__.py?v=af762e4a5f56",
-      "size": 30,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/btrieve/__init__.py?v=9b7786785445",
+      "size": 262,
       "extension": ".py",
       "name": "__init__.py",
       "category": "python_sources"
     },
     {
+      "path": "src/btrieve/btrieve_client.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/btrieve/btrieve_client.py?v=9b7786785445",
+      "size": 7292,
+      "extension": ".py",
+      "name": "btrieve_client.py",
+      "category": "python_sources"
+    },
+    {
       "path": "src/business/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/business/__init__.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/business/__init__.py?v=9b7786785445",
       "size": 30,
       "extension": ".py",
       "name": "__init__.py",
@@ -167,23 +223,63 @@
     },
     {
       "path": "src/database/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/database/__init__.py?v=af762e4a5f56",
-      "size": 30,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/database/__init__.py?v=9b7786785445",
+      "size": 1000,
       "extension": ".py",
       "name": "__init__.py",
+      "category": "python_sources"
+    },
+    {
+      "path": "src/database/postgres_client.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/database/postgres_client.py?v=9b7786785445",
+      "size": 17369,
+      "extension": ".py",
+      "name": "postgres_client.py",
       "category": "python_sources"
     },
     {
       "path": "src/models/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/models/__init__.py?v=af762e4a5f56",
-      "size": 30,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/models/__init__.py?v=9b7786785445",
+      "size": 364,
       "extension": ".py",
       "name": "__init__.py",
       "category": "python_sources"
     },
     {
+      "path": "src/models/barcode.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/models/barcode.py?v=9b7786785445",
+      "size": 7180,
+      "extension": ".py",
+      "name": "barcode.py",
+      "category": "python_sources"
+    },
+    {
+      "path": "src/models/gscat.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/models/gscat.py?v=9b7786785445",
+      "size": 11665,
+      "extension": ".py",
+      "name": "gscat.py",
+      "category": "python_sources"
+    },
+    {
+      "path": "src/models/mglst.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/models/mglst.py?v=9b7786785445",
+      "size": 8291,
+      "extension": ".py",
+      "name": "mglst.py",
+      "category": "python_sources"
+    },
+    {
+      "path": "src/models/pab.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/models/pab.py?v=9b7786785445",
+      "size": 9589,
+      "extension": ".py",
+      "name": "pab.py",
+      "category": "python_sources"
+    },
+    {
       "path": "src/ui/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/ui/__init__.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/ui/__init__.py?v=9b7786785445",
       "size": 30,
       "extension": ".py",
       "name": "__init__.py",
@@ -191,7 +287,7 @@
     },
     {
       "path": "src/ui/widgets/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/ui/widgets/__init__.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/ui/widgets/__init__.py?v=9b7786785445",
       "size": 30,
       "extension": ".py",
       "name": "__init__.py",
@@ -199,15 +295,23 @@
     },
     {
       "path": "src/utils/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/src/utils/__init__.py?v=af762e4a5f56",
-      "size": 30,
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/utils/__init__.py?v=9b7786785445",
+      "size": 186,
       "extension": ".py",
       "name": "__init__.py",
       "category": "python_sources"
     },
     {
+      "path": "src/utils/config.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/src/utils/config.py?v=9b7786785445",
+      "size": 2991,
+      "extension": ".py",
+      "name": "config.py",
+      "category": "python_sources"
+    },
+    {
       "path": "tests/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/tests/__init__.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/tests/__init__.py?v=9b7786785445",
       "size": 30,
       "extension": ".py",
       "name": "__init__.py",
@@ -215,15 +319,39 @@
     },
     {
       "path": "tests/integration/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/tests/integration/__init__.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/tests/integration/__init__.py?v=9b7786785445",
       "size": 30,
       "extension": ".py",
       "name": "__init__.py",
       "category": "tests"
     },
     {
+      "path": "tests/test_config.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/tests/test_config.py?v=9b7786785445",
+      "size": 228,
+      "extension": ".py",
+      "name": "test_config.py",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_integration.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/tests/test_integration.py?v=9b7786785445",
+      "size": 667,
+      "extension": ".py",
+      "name": "test_integration.py",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_postgres_connection.py",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/tests/test_postgres_connection.py?v=9b7786785445",
+      "size": 11297,
+      "extension": ".py",
+      "name": "test_postgres_connection.py",
+      "category": "tests"
+    },
+    {
       "path": "tests/unit/__init__.py",
-      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/af762e4a5f564f627bf895ecab8ec487ad67c719/tests/unit/__init__.py?v=af762e4a5f56",
+      "raw_url": "https://raw.githubusercontent.com/rauschiccsk/invoice-editor/9b7786785445df2fd2c50c68e2f8d04e12959764/tests/unit/__init__.py?v=9b7786785445",
       "size": 30,
       "extension": ".py",
       "name": "__init__.py",
