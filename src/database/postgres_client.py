@@ -43,18 +43,29 @@ class PostgresClient:
 
     def _get_connection_params(self) -> dict:
         """Get connection parameters from config"""
-        # Try to get config from 'database.postgres' or 'postgresql'
-        db_config = self.config.get('database.postgres', {})
-        if not db_config:
-            db_config = self.config.get('postgresql', {})
+        # Check if config is already a connection dict (has 'host' key)
+        if isinstance(self.config, dict) and 'host' in self.config:
+            # Direct connection params
+            params = {
+                'host': self.config.get('host', 'localhost'),
+                'port': self.config.get('port', 5432),
+                'database': self.config.get('database', 'invoice_editor'),
+                'user': self.config.get('user', 'postgres'),
+                'password': self.config.get('password', '')
+            }
+        else:
+            # Config object - try to get nested config
+            db_config = self.config.get('database.postgres', {})
+            if not db_config:
+                db_config = self.config.get('postgresql', {})
 
-        params = {
-            'host': db_config.get('host', 'localhost'),
-            'port': db_config.get('port', 5432),
-            'database': db_config.get('database', 'invoice_editor'),
-            'user': db_config.get('user', 'postgres'),
-            'password': db_config.get('password', '')
-        }
+            params = {
+                'host': db_config.get('host', 'localhost'),
+                'port': db_config.get('port', 5432),
+                'database': db_config.get('database', 'invoice_editor'),
+                'user': db_config.get('user', 'postgres'),
+                'password': db_config.get('password', '')
+            }
 
         self.logger.info(f"Connection params: host={params['host']} port={params['port']} database={params['database']} user={params['user']}")
 

@@ -1,13 +1,13 @@
 # SESSION NOTES - Invoice Editor
 **Last Updated:** 2025-11-12  
 **Developer:** Zoltán (ICC Komárno)  
-**Current Session:** Session 4B Complete - PostgreSQL Integration
+**Current Session:** Session 4C Complete - XML Import Fix
 
 ---
 
 ## 📊 PROJECT STATUS
 
-**Overall Progress:** 70% (Phase 4 Complete - Business Logic & Database Integration)  
+**Overall Progress:** 75% (Phase 4 Complete + XML Import Working)  
 **Current Phase:** Phase 4 Complete  
 **Next Phase:** Phase 5 - NEX Genesis Integration
 
@@ -78,7 +78,7 @@ NEX Genesis (Btrieve)
 
 ### PHASE 4: Business Logic & Database Integration ✅ COMPLETE
 **Status:** 100% Complete  
-**Completed:** Sessions 4 & 4B (2025-11-12)
+**Completed:** Sessions 4, 4B, 4C (2025-11-12)
 
 **Achievements:**
 
@@ -102,13 +102,32 @@ NEX Genesis (Btrieve)
 - ✅ Environment variable configuration (POSTGRES_PASSWORD)
 - ✅ Full workflow: load → edit → save → refresh
 
+#### Session 4C: XML Import Fix ✅ NEW
+- ✅ Diagnosed null byte encoding issue from NEX Genesis Btrieve
+- ✅ Implemented `clean_string()` sanitization function
+- ✅ Fixed import_xml_to_staging.py script
+- ✅ Removed null bytes (\x00) from GSCAT.NAME fields
+- ✅ Removed control characters from all text fields
+- ✅ Successful XML import with NEX lookup working
+- ✅ Data integrity maintained (PostgreSQL UTF8 compatible)
+
 **Technical Solutions:**
+
+**Session 4B:**
 - **Problem:** psycopg3 requires 64-bit libpq.dll, incompatible with 32-bit Python
 - **Solution:** Switched to pg8000 (Pure Python driver, no DLL dependencies)
 - **Problem:** Production database has different schema than expected
 - **Solution:** Created schema mapping layer in invoice_service.py
 - **Problem:** pg8000 cursors don't support context managers
 - **Solution:** Refactored to explicit cursor.close() pattern
+
+**Session 4C:**
+- **Problem:** NEX Genesis GSCAT.BTR contains null bytes (\x00) in fixed-width fields
+- **Solution:** Created `clean_string()` function to sanitize all text data
+- **Problem:** PostgreSQL UTF8 encoding rejects null bytes
+- **Solution:** Remove \x00 and control characters before database insert
+- **Problem:** Excess whitespace from Btrieve padding
+- **Solution:** Strip whitespace after character removal
 
 **Schema Mapping:**
 ```
@@ -133,6 +152,24 @@ UI → Production DB:
 + edited_at = CURRENT_TIMESTAMP
 ```
 
+**Data Sanitization Pattern (Session 4C):**
+```python
+def clean_string(value):
+    """Remove null bytes and control characters"""
+    if value is None or not isinstance(value, str):
+        return value
+    
+    # Remove null bytes
+    cleaned = value.replace('\x00', '')
+    
+    # Remove control chars (except \n, \t)
+    cleaned = ''.join(char for char in cleaned 
+                     if ord(char) >= 32 or char in '\n\t')
+    
+    # Strip whitespace
+    return cleaned.strip() if cleaned else None
+```
+
 **Deliverables:**
 - ✅ Working PostgreSQL connection (pg8000)
 - ✅ Invoice list loads from database
@@ -140,6 +177,8 @@ UI → Production DB:
 - ✅ Edit functionality with real-time calculation
 - ✅ Save updates database (invoice_items_pending)
 - ✅ Full integration with production schema
+- ✅ XML import with NEX Genesis lookup working
+- ✅ Data sanitization for Btrieve compatibility
 - ✅ Fallback to stub data if database unavailable
 
 ---
@@ -173,7 +212,7 @@ UI → Production DB:
 
 ---
 
-## 🎯 CURRENT STATUS - SESSION 4B COMPLETE
+## 🎯 CURRENT STATUS - SESSION 4C COMPLETE
 
 ### ✅ What's Working
 1. **PostgreSQL Integration:** Fully operational
@@ -183,20 +222,28 @@ UI → Production DB:
    - Transaction support
    - Environment variable config
 
-2. **Invoice List:** Database-driven
+2. **XML Import:** Working with NEX lookup
+   - Parses ISDOC XML files
+   - NEX Genesis lookup by EAN
+   - Data sanitization (null bytes removed)
+   - Creates invoices_pending records
+   - Creates invoice_items_pending records
+   - UTF8 encoding compatible
+
+3. **Invoice List:** Database-driven
    - Loads pending invoices from PostgreSQL
    - Displays supplier info, amounts, dates
    - Real-time selection
    - Refresh functionality (F5)
 
-3. **Invoice Detail Window:** Fully functional
+4. **Invoice Detail Window:** Fully functional
    - Opens from invoice list
    - Loads items from database (schema mapping)
    - Displays header info
    - Shows editable items grid
    - Auto-updates summary
 
-4. **Editable Grid:** Complete and working
+5. **Editable Grid:** Complete and working
    - Loads real data from invoice_items_pending
    - In-place editing (9 columns)
    - Auto-calculation: rabat → price → total
@@ -204,7 +251,7 @@ UI → Production DB:
    - Cell validation
    - Visual feedback
 
-5. **Save Functionality:** Database integration
+6. **Save Functionality:** Database integration
    - Saves to invoice_items_pending
    - Updates edited_name, edited_mglst_code, etc.
    - Sets was_edited = true
@@ -212,7 +259,7 @@ UI → Production DB:
    - Recalculates invoice total_amount
    - Transaction rollback on error
 
-6. **User Experience:** Professional
+7. **User Experience:** Professional
    - Keyboard shortcuts (F5, Ctrl+F, Ctrl+S, Escape)
    - Status bar feedback
    - Success/error messages
@@ -255,10 +302,12 @@ invoice-editor/
 │   ├── database/
 │   │   └── TYPE_MAPPINGS.md    ✅ Type conversion guide
 │   ├── POSTGRESQL_SETUP.md     ✅ PostgreSQL setup
+│   ├── INIT_PROMPT_NEW_CHAT.md ✅ Session 5 init
 │   └── SESSION_NOTES.md        ✅ This file
 ├── logs/                        ✅ Application logs (runtime)
 ├── scripts/
 │   ├── generate_project_access.py      ✅ Manifest generator
+│   ├── import_xml_to_staging.py        ✅ XML import (FIXED)
 │   ├── insert_test_data.py             ✅ Test data insertion
 │   ├── verify_database.py              ✅ Connection verification
 │   ├── check_database_schema.py        ✅ Schema inspection
@@ -282,7 +331,8 @@ invoice-editor/
 │   │   └── config.py           ✅ Config loader with ENV support
 │   ├── business/
 │   │   ├── __init__.py         ✅ Business exports
-│   │   └── invoice_service.py  ✅ Service with schema mapping
+│   │   ├── invoice_service.py  ✅ Service with schema mapping
+│   │   └── nex_lookup_service.py ✅ NEX Genesis lookup
 │   └── ui/
 │       ├── __init__.py         ✅ UI exports
 │       ├── main_window.py      ✅ Main window
@@ -327,6 +377,19 @@ invoice-editor/
 - Reverse mapping UI → production on save
 - Transparent to UI layer
 - Easy to maintain and update
+
+### Data Sanitization Pattern (NEW - Session 4C)
+**Challenge:** NEX Genesis Btrieve uses fixed-width fields with null byte padding
+- GSCAT.NAME contains \x00 bytes
+- PostgreSQL UTF8 encoding rejects null bytes
+- Control characters cause display issues
+
+**Solution:** clean_string() function
+- Removes \x00 null bytes
+- Filters control characters (except \n, \t)
+- Strips excess whitespace
+- Applied to all text fields from NEX
+- Applied to XML import data
 
 ### 32-bit Python Constraint
 **Challenge:** NEX Genesis requires 32-bit Btrieve DLL
@@ -380,6 +443,17 @@ invoice-editor/
   - Real load/edit/save workflow
 - **Result:** Phase 4 100% complete, database fully integrated
 
+### 2025-11-12 - Session 4C ✅ COMPLETE
+- **Topic:** XML Import Fix - Null Byte Sanitization
+- **Duration:** ~1 hour
+- **Achievements:**
+  - Diagnosed null byte issue in NEX Genesis data
+  - Created clean_string() sanitization function
+  - Fixed import_xml_to_staging.py script
+  - Tested successful XML import with NEX lookup
+  - Verified data integrity in PostgreSQL
+- **Result:** XML import working, data sanitization complete
+
 ### Next Session - Session 5 🎯 PLANNED
 - **Topic:** NEX Genesis Integration - Approval & Delivery Notes
 - **Estimated Duration:** 6-8 hours
@@ -394,6 +468,13 @@ invoice-editor/
 ---
 
 ## 🎓 LESSONS LEARNED
+
+### Session 4C Key Lessons
+1. ✅ **Btrieve Fixed-Width Fields:** Always contain null byte padding
+2. ✅ **PostgreSQL UTF8:** Strictly rejects null bytes in text fields
+3. ✅ **Data Sanitization:** Essential when bridging legacy and modern systems
+4. ✅ **Systematic Testing:** Test with real data early to catch encoding issues
+5. ✅ **Clean Function Pattern:** Single utility function handles all text cleaning
 
 ### Session 4B Key Lessons
 1. ✅ **Pure Python Libraries:** Essential for cross-platform/architecture compatibility
@@ -415,6 +496,7 @@ invoice-editor/
 8. ✅ Signal/Slot architecture keeps code clean
 9. ✅ Real-time calculation with Decimal precision
 10. ✅ Modal dialogs better UX than separate windows
+11. ✅ Legacy data requires sanitization for modern systems
 
 ---
 
@@ -439,8 +521,8 @@ invoice-editor/
 ## 📊 METRICS
 
 ### Code Statistics
-- **Python Files:** ~40 files
-- **Lines of Code:** ~8,000 lines
+- **Python Files:** ~45 files
+- **Lines of Code:** ~8,500 lines
 - **Test Coverage:** Unit tests for database layer
 - **Dependencies:** 5 main packages (PyQt5, pg8000, PyYAML, python-dateutil, scramp)
 
@@ -450,8 +532,9 @@ invoice-editor/
 - **Session 3:** 2 hours (UI Foundation)
 - **Session 4:** 2 hours (Editing Features)
 - **Session 4B:** 3 hours (PostgreSQL Integration)
-- **Total:** 12 hours
-- **Progress:** 70% complete
+- **Session 4C:** 1 hour (XML Import Fix)
+- **Total:** 13 hours
+- **Progress:** 75% complete
 
 ### Performance
 - **Startup Time:** <2 seconds
@@ -459,19 +542,22 @@ invoice-editor/
 - **Invoice List Load:** <500ms (10 invoices)
 - **Item Grid Load:** <300ms (10 items)
 - **Save Operation:** <500ms (transaction)
+- **XML Import:** <2 seconds (10 items with NEX lookup)
 
 ---
 
 ## 🚀 READY FOR SESSION 5
 
-**Status:** Phase 4 complete, database fully integrated  
+**Status:** Phase 4 complete, XML import working  
 **Next:** NEX Genesis Integration (GSCAT, BARCODE, TSH/TSI creation)  
-**Overall Progress:** 70% (4 of 6 phases complete)
+**Overall Progress:** 75% (4 of 6 phases complete + XML import)
 
 **Prerequisites for Session 5:**
 - ✅ Database integration working
 - ✅ Edit functionality complete
 - ✅ Save to PostgreSQL working
+- ✅ XML import with NEX lookup working
+- ✅ Data sanitization implemented
 - ✅ Btrieve client ready
 - ✅ Data models implemented
 - ⏳ Need approval workflow
@@ -481,6 +567,6 @@ invoice-editor/
 
 **END OF SESSION NOTES**
 
-**Current Status:** Session 4B Complete - PostgreSQL Integration Working  
+**Current Status:** Session 4C Complete - XML Import Working  
 **Next Session:** Session 5 - NEX Genesis Integration  
-**Overall Progress:** 70% (4 of 6 phases complete)
+**Overall Progress:** 75% (Phase 4 + XML Import Complete)
