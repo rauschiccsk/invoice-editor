@@ -10,6 +10,7 @@ from decimal import Decimal
 try:
     import pg8000
     import pg8000.dbapi
+
     PG8000_AVAILABLE = True
 except ImportError:
     PG8000_AVAILABLE = False
@@ -44,7 +45,7 @@ class PostgresClient:
     def _get_connection_params(self) -> dict:
         """Get connection parameters from config"""
         # Try to get config from 'database.postgres' or 'postgresql'
-        db_config = self.config.get('database.postgres', {})
+        db_config = self.config.get('database', {}).get('postgres', {})
         if not db_config:
             db_config = self.config.get('postgresql', {})
 
@@ -56,7 +57,8 @@ class PostgresClient:
             'password': db_config.get('password', '')
         }
 
-        self.logger.info(f"Connection params: host={params['host']} port={params['port']} database={params['database']} user={params['user']}")
+        self.logger.info(
+            f"Connection params: host={params['host']} port={params['port']} database={params['database']} user={params['user']}")
 
         return params
 
@@ -67,8 +69,8 @@ class PostgresClient:
 
         Usage:
             with client.get_connection() as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT * FROM table")
+                with conn.cursor() as cur:
+                    cur.execute("SELECT * FROM table")
         """
         conn = None
         try:
@@ -92,25 +94,23 @@ class PostgresClient:
         """
         try:
             with self.get_connection() as conn:
-                cur = conn.cursor()
-                cur.execute(query, params or ())
+                with conn.cursor() as cur:
+                    cur.execute(query, params or ())
 
-                if fetch:
-                    # Get column names
-                    columns = [desc[0] for desc in cur.description] if cur.description else []
+                    if fetch:
+                        # Get column names
+                        columns = [desc[0] for desc in cur.description] if cur.description else []
 
-                    # Fetch rows and convert to dictionaries
-                    rows = cur.fetchall()
-                    results = [dict(zip(columns, row)) for row in rows]
+                        # Fetch rows and convert to dictionaries
+                        rows = cur.fetchall()
+                        results = [dict(zip(columns, row)) for row in rows]
 
-                    cur.close()
-                    self.logger.debug(f"Query returned {len(results)} rows")
-                    return results
-                else:
-                    conn.commit()
-                    cur.close()
-                    self.logger.debug("Query executed, no results")
-                    return None
+                        self.logger.debug(f"Query returned {len(results)} rows")
+                        return results
+                    else:
+                        conn.commit()
+                        self.logger.debug("Query executed, no results")
+                        return None
 
         except Exception as e:
             self.logger.exception(f"Query execution failed: {query}")
@@ -129,13 +129,12 @@ class PostgresClient:
         """
         try:
             with self.get_connection() as conn:
-                cur = conn.cursor()
-                cur.executemany(query, params_list)
-                conn.commit()
-                affected = cur.rowcount
-                cur.close()
-                self.logger.info(f"Batch execution affected {affected} rows")
-                return affected
+                with conn.cursor() as cur:
+                    cur.executemany(query, params_list)
+                    conn.commit()
+                    affected = cur.rowcount
+                    self.logger.info(f"Batch execution affected {affected} rows")
+                    return affected
 
         except Exception as e:
             self.logger.exception("Batch execution failed")
@@ -148,9 +147,9 @@ class PostgresClient:
 
         Usage:
             with client.transaction() as conn:
-                cur = conn.cursor()
-                cur.execute("INSERT ...")
-                cur.execute("UPDATE ...")
+                with conn.cursor() as cur:
+                    cur.execute("INSERT ...")
+                    cur.execute("UPDATE ...")
                 # Auto-commit on success, rollback on exception
         """
         conn = None

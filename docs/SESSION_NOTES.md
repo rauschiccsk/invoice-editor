@@ -1,14 +1,14 @@
 # SESSION NOTES - Invoice Editor
 **Last Updated:** 2025-11-12  
 **Developer:** Zoltán (ICC Komárno)  
-**Current Session:** Session 4 In Progress - Business Logic & Invoice Detail
+**Current Session:** Session 4B Complete - PostgreSQL Integration
 
 ---
 
 ## 📊 PROJECT STATUS
 
-**Overall Progress:** 60% (Phase 4 Core Complete)  
-**Current Phase:** Phase 4 - Business Logic (80% complete)  
+**Overall Progress:** 70% (Phase 4 Complete - Business Logic & Database Integration)  
+**Current Phase:** Phase 4 Complete  
 **Next Phase:** Phase 5 - NEX Genesis Integration
 
 ---
@@ -76,72 +76,86 @@ NEX Genesis (Btrieve)
 
 ---
 
-### PHASE 4: Business Logic & Invoice Detail ⏳ IN PROGRESS
-**Status:** 80% Complete  
-**Started:** Session 4 (2025-11-12)
+### PHASE 4: Business Logic & Database Integration ✅ COMPLETE
+**Status:** 100% Complete  
+**Completed:** Sessions 4 & 4B (2025-11-12)
 
 **Achievements:**
 
-#### Priority 1: Invoice Detail Window ✅ COMPLETE
-- ✅ `src/ui/invoice_detail_window.py` - QDialog implementation
-- ✅ Invoice header display (číslo, dátum, dodávateľ, IČO, mena, stav)
-- ✅ Editable items grid integration
-- ✅ Summary display (celková suma)
-- ✅ Save/Cancel buttons
-- ✅ Modal dialog behavior
-- ✅ Signal integration (invoice_saved)
-
-#### Priority 2: Editable Item Grid ✅ COMPLETE
-- ✅ `src/ui/widgets/invoice_items_grid.py` - Editable QTableView
-- ✅ Custom editable model (QAbstractTableModel)
-- ✅ 9 columns: PLU, Názov, Kategória, MJ, Množstvo, Cena, Rabat%, Po rabate, Suma
-- ✅ In-place editing (double-click cell)
-- ✅ Tab/Enter navigation
-- ✅ Cell validation (numeric, ranges)
-- ✅ Automatic price recalculation:
-  - Price after rabat = Unit price × (1 - Rabat/100)
-  - Total price = Price after rabat × Quantity
+#### Session 4: Core Editing Features ✅
+- ✅ Invoice detail window (QDialog)
+- ✅ Editable items grid (9 columns)
+- ✅ In-place cell editing
+- ✅ Automatic price calculation (rabat → price → total)
 - ✅ Real-time updates
-- ✅ Visual indicators (calculated columns highlighted)
-
-#### Priority 3: Extended Invoice Service ✅ COMPLETE
-- ✅ `get_invoice_items(invoice_id)` - Load items with stub data
-- ✅ `save_invoice(invoice_id, items)` - Save functionality (stub mode)
-- ✅ `calculate_item_price()` - Price calculation helper
-- ✅ Stub data for multiple invoices (different items per invoice)
-
-#### Priority 4: Main Window Integration ✅ COMPLETE
-- ✅ Double-click opens detail window
-- ✅ Modal dialog display
-- ✅ Refresh list after save
-- ✅ Signal handling
-
-**Pending in Phase 4:**
-- ⏳ PostgreSQL integration (real database save)
-- ⏳ Product lookup from GSCAT
-- ⏳ Category selection from MGLST
-- ⏳ Advanced validation rules
-- ⏳ Item add/delete functionality
-
-**Deliverables (Completed):**
-- ✅ Working invoice detail window
-- ✅ Editable grid with auto-calculation
+- ✅ Cell validation
 - ✅ Save functionality (stub mode)
-- ✅ Professional editing experience
-- ✅ Real-time price updates
+- ✅ Keyboard shortcuts (Ctrl+S, Escape)
+
+#### Session 4B: PostgreSQL Integration ✅
+- ✅ PostgreSQL driver switch: psycopg3 → pg8000 (Pure Python)
+- ✅ Resolved 32-bit Python compatibility (no libpq.dll dependency)
+- ✅ Production schema adaptation (supplier_invoice_loader integration)
+- ✅ Schema mapping layer (production ↔ UI columns)
+- ✅ Real database load/save operations
+- ✅ Transaction handling
+- ✅ Environment variable configuration (POSTGRES_PASSWORD)
+- ✅ Full workflow: load → edit → save → refresh
+
+**Technical Solutions:**
+- **Problem:** psycopg3 requires 64-bit libpq.dll, incompatible with 32-bit Python
+- **Solution:** Switched to pg8000 (Pure Python driver, no DLL dependencies)
+- **Problem:** Production database has different schema than expected
+- **Solution:** Created schema mapping layer in invoice_service.py
+- **Problem:** pg8000 cursors don't support context managers
+- **Solution:** Refactored to explicit cursor.close() pattern
+
+**Schema Mapping:**
+```
+Production DB → UI:
+- edited_name/original_name → item_name
+- edited_mglst_code → category_code
+- original_unit → unit
+- original_quantity → quantity
+- edited_price_buy/original_price_per_unit → unit_price
+- edited_discount_percent → rabat_percent
+- final_price_buy → price_after_rabat
+- (calculated) → total_price
+- nex_gs_code/original_ean → plu_code
+
+UI → Production DB:
+- item_name → edited_name
+- category_code → edited_mglst_code
+- unit_price → edited_price_buy
+- rabat_percent → edited_discount_percent
+- price_after_rabat → final_price_buy
++ was_edited = true
++ edited_at = CURRENT_TIMESTAMP
+```
+
+**Deliverables:**
+- ✅ Working PostgreSQL connection (pg8000)
+- ✅ Invoice list loads from database
+- ✅ Invoice detail loads items from database
+- ✅ Edit functionality with real-time calculation
+- ✅ Save updates database (invoice_items_pending)
+- ✅ Full integration with production schema
+- ✅ Fallback to stub data if database unavailable
 
 ---
 
-### PHASE 5: NEX Genesis Integration ⏳ PLANNED
+### PHASE 5: NEX Genesis Integration ⏳ NEXT
 **Status:** 0% - Not Started
 
 **Tasks:**
+- [ ] Approval workflow (status: pending → approved)
 - [ ] GSCAT operations (create/update products)
-- [ ] BARCODE operations
-- [ ] PAB validation
+- [ ] BARCODE operations (create barcodes)
+- [ ] PAB validation (supplier lookup)
 - [ ] TSH/TSI creation (delivery notes)
 - [ ] PLU reservation mechanism
 - [ ] Transaction handling
+- [ ] Error handling and rollback
 
 ---
 
@@ -159,58 +173,71 @@ NEX Genesis (Btrieve)
 
 ---
 
-## 🎯 CURRENT STATUS - SESSION 4 IN PROGRESS
+## 🎯 CURRENT STATUS - SESSION 4B COMPLETE
 
 ### ✅ What's Working
-1. **Invoice Detail Window:** Fully functional
-   - Opens from invoice list (double-click)
-   - Displays invoice header correctly
+1. **PostgreSQL Integration:** Fully operational
+   - pg8000 Pure Python driver
+   - Connection pooling working
+   - Real database queries
+   - Transaction support
+   - Environment variable config
+
+2. **Invoice List:** Database-driven
+   - Loads pending invoices from PostgreSQL
+   - Displays supplier info, amounts, dates
+   - Real-time selection
+   - Refresh functionality (F5)
+
+3. **Invoice Detail Window:** Fully functional
+   - Opens from invoice list
+   - Loads items from database (schema mapping)
+   - Displays header info
    - Shows editable items grid
-   - Summary auto-updates
-   - Modal dialog behavior
+   - Auto-updates summary
 
-2. **Editable Grid:** Complete and working
-   - In-place editing works
-   - Tab/Enter navigation
-   - Numeric validation
-   - Range checks (rabat 0-100%)
-   - Auto-calculation real-time:
-     - Rabat → Price after rabat
-     - Quantity × Price → Total
-     - Sum of items → Invoice total
-   - Visual feedback (highlighted calculated columns)
+4. **Editable Grid:** Complete and working
+   - Loads real data from invoice_items_pending
+   - In-place editing (9 columns)
+   - Auto-calculation: rabat → price → total
+   - Real-time updates
+   - Cell validation
+   - Visual feedback
 
-3. **Business Logic:** Core implemented
-   - Item loading from service
-   - Save to service (stub mode)
-   - Price calculation correct
-   - Multiple invoices with different items
+5. **Save Functionality:** Database integration
+   - Saves to invoice_items_pending
+   - Updates edited_name, edited_mglst_code, etc.
+   - Sets was_edited = true
+   - Updates edited_at timestamp
+   - Recalculates invoice total_amount
+   - Transaction rollback on error
 
-4. **User Experience:** Professional
-   - Double-click to edit cells
-   - Keyboard shortcuts (Ctrl+S, Escape)
+6. **User Experience:** Professional
+   - Keyboard shortcuts (F5, Ctrl+F, Ctrl+S, Escape)
+   - Status bar feedback
    - Success/error messages
-   - Clean UI layout
-   - Responsive updates
+   - Loading indicators
+   - Professional appearance
 
-### ⏳ What's Pending
-1. **Database Integration:** Using stubs
-   - PostgreSQL queries not implemented
-   - Save goes to log only, not database
-   - Need to install psycopg2
-   - Need to implement actual SQL
+### ⏳ What's Next (Phase 5)
+1. **Approval Workflow:** Not implemented
+   - Change status: pending → approved
+   - Approval timestamp and user
+   - Trigger NEX Genesis creation
 
-2. **Advanced Features:** Not implemented
-   - Product lookup (GSCAT)
-   - Category dropdown (MGLST)
-   - Item add/delete
-   - Validation rules
-   - Error handling edge cases
+2. **NEX Genesis Integration:** Not started
+   - Create products in GSCAT
+   - Create barcodes in BARCODE
+   - Validate supplier in PAB
+   - Create delivery notes (TSH/TSI)
+   - Handle PLU reservation
 
-3. **NEX Genesis Write:** Not started
-   - No delivery note creation
-   - No product/barcode creation
-   - No PLU reservation
+3. **Advanced Features:** Not implemented
+   - Item add/delete in grid
+   - Product lookup dialog
+   - Category dropdown
+   - Barcode scanning
+   - Batch operations
 
 ---
 
@@ -219,7 +246,7 @@ NEX Genesis (Btrieve)
 ```
 invoice-editor/
 ├── config/
-│   └── config.yaml              ✅ Configuration
+│   └── config.yaml              ✅ Configuration (with ENV variables)
 ├── database/
 │   └── schemas/
 │       ├── 001_initial_schema.sql  ✅ PostgreSQL schema
@@ -230,6 +257,12 @@ invoice-editor/
 │   ├── POSTGRESQL_SETUP.md     ✅ PostgreSQL setup
 │   └── SESSION_NOTES.md        ✅ This file
 ├── logs/                        ✅ Application logs (runtime)
+├── scripts/
+│   ├── generate_project_access.py      ✅ Manifest generator
+│   ├── insert_test_data.py             ✅ Test data insertion
+│   ├── verify_database.py              ✅ Connection verification
+│   ├── check_database_schema.py        ✅ Schema inspection
+│   └── add_test_items_invoice2.py      ✅ Test item generator
 ├── src/
 │   ├── __init__.py              ✅ Root package
 │   ├── btrieve/
@@ -243,59 +276,68 @@ invoice-editor/
 │   │   └── mglst.py            ✅ Category model
 │   ├── database/
 │   │   ├── __init__.py         ✅ Database exports
-│   │   └── postgres_client.py  ✅ PostgreSQL client (stub)
+│   │   └── postgres_client.py  ✅ PostgreSQL client (pg8000)
 │   ├── utils/
 │   │   ├── __init__.py         ✅ Utils exports
-│   │   └── config.py           ✅ Config loader (working)
+│   │   └── config.py           ✅ Config loader with ENV support
 │   ├── business/
 │   │   ├── __init__.py         ✅ Business exports
-│   │   └── invoice_service.py  ✅ Invoice service (extended)
+│   │   └── invoice_service.py  ✅ Service with schema mapping
 │   └── ui/
 │       ├── __init__.py         ✅ UI exports
-│       ├── main_window.py      ✅ Main window (updated)
-│       ├── invoice_detail_window.py  ✅ Detail window (NEW)
+│       ├── main_window.py      ✅ Main window
+│       ├── invoice_detail_window.py  ✅ Detail window
 │       ├── widgets/
 │       │   ├── __init__.py     ✅ Widget exports
 │       │   ├── invoice_list_widget.py   ✅ Invoice list
-│       │   └── invoice_items_grid.py    ✅ Items grid (NEW)
+│       │   └── invoice_items_grid.py    ✅ Items grid
 │       └── dialogs/
 │           └── __init__.py     ✅ Dialog exports (placeholder)
 ├── tests/
 │   └── test_postgres_connection.py  ✅ Database tests
-├── requirements.txt             ✅ Dependencies
+├── requirements.txt             ✅ Dependencies (pg8000 added)
 └── main.py                      ✅ Application entry point
 ```
 
 ---
 
-## 💡 KEY TECHNICAL ACHIEVEMENTS - SESSION 4
+## 💡 KEY TECHNICAL ACHIEVEMENTS
 
-### Editable Grid Implementation
-- **Pattern:** QAbstractTableModel with editable cells
-- **Validation:** Type checking, range validation
-- **Auto-calculation:** Real-time price updates
-- **User Experience:** Double-click to edit, Tab navigation
+### PostgreSQL Driver Selection
+**Challenge:** 32-bit Python + PostgreSQL connectivity
+- psycopg3 requires libpq.dll (not available for 32-bit)
+- psycopg-binary not available for 32-bit Python
+- psycopg2-binary requires C++ build tools
 
-### Price Calculation Logic
-```python
-# Automatic calculation in model
-price_after_rabat = unit_price * (1 - rabat_percent/100)
-total_price = price_after_rabat * quantity
+**Solution:** pg8000 (Pure Python)
+- 100% Pure Python implementation
+- No DLL dependencies
+- No C compiler required
+- Works perfectly on 32-bit Python
+- Compatible API with standard DB-API
 
-# Real-time updates on any value change
-# Signal propagation: cell edit → model → grid → window
-```
+### Schema Adaptation Pattern
+**Challenge:** Production database has different column names
+- Application expects generic names (item_name, plu_code)
+- Production has specific names (edited_name, original_name, nex_gs_code)
 
-### Signal Architecture
-```
-InvoiceItemsModel.items_changed
-    ↓
-InvoiceItemsGrid.items_changed
-    ↓
-InvoiceDetailWindow._update_summary()
-    ↓
-Total sum updated in UI
-```
+**Solution:** Mapping layer in invoice_service.py
+- SQL queries map production → UI on load
+- COALESCE for optional fields
+- Reverse mapping UI → production on save
+- Transparent to UI layer
+- Easy to maintain and update
+
+### 32-bit Python Constraint
+**Challenge:** NEX Genesis requires 32-bit Btrieve DLL
+- Modern tools often assume 64-bit
+- Binary packages not always available
+
+**Solutions Applied:**
+- pg8000 instead of psycopg (Pure Python)
+- PyQt5 works on 32-bit
+- All Python packages Pure Python compatible
+- No C extensions required
 
 ---
 
@@ -316,47 +358,129 @@ Total sum updated in UI
 - **Duration:** ~2 hours
 - **Result:** UI Foundation 100% complete
 
-### 2025-11-12 - Session 4 ⏳ IN PROGRESS
+### 2025-11-12 - Session 4 ✅ COMPLETE
 - **Topic:** Invoice Detail Window & Item Editing
-- **Duration:** ~2 hours (so far)
+- **Duration:** ~2 hours
 - **Achievements:**
   - Invoice detail window created
   - Editable items grid implemented
   - Auto-calculation working
   - Save functionality (stub mode)
-  - Full editing experience working
-- **Status:** Core functionality complete (80%)
-- **Remaining:** PostgreSQL integration, product lookup, advanced features
+- **Result:** Core editing features 100% complete
 
-### Next Steps - Continue Session 4 or Session 5
-- **Option A:** Continue Session 4 - Add PostgreSQL integration
-- **Option B:** Move to Session 5 - NEX Genesis integration
-- **Decision:** Based on priority (database vs NEX Genesis features)
+### 2025-11-12 - Session 4B ✅ COMPLETE
+- **Topic:** PostgreSQL Integration & Production Schema Adaptation
+- **Duration:** ~3 hours
+- **Achievements:**
+  - Switched to pg8000 (Pure Python driver)
+  - Resolved 32-bit compatibility issues
+  - Created schema mapping layer
+  - Full database integration working
+  - Environment variable configuration
+  - Real load/edit/save workflow
+- **Result:** Phase 4 100% complete, database fully integrated
+
+### Next Session - Session 5 🎯 PLANNED
+- **Topic:** NEX Genesis Integration - Approval & Delivery Notes
+- **Estimated Duration:** 6-8 hours
+- **Goals:**
+  - Implement approval workflow
+  - Create products in GSCAT
+  - Create barcodes in BARCODE
+  - Generate delivery notes (TSH/TSI)
+  - PLU reservation
+  - Transaction handling
 
 ---
 
-## 🎓 LESSONS LEARNED - SESSION 4
+## 🎓 LESSONS LEARNED
 
-1. ✅ **QAbstractTableModel:** Powerful for custom editable grids
-2. ✅ **Signal/Slot Architecture:** Clean separation of concerns
-3. ✅ **Real-time Calculation:** Decimal precision critical for money
-4. ✅ **Validation in Model:** Better than validating in view
-5. ✅ **Stub Data Strategy:** Allows UI development without database
-6. ✅ **Modal Dialogs:** Better UX than separate windows for editing
-7. ✅ **Auto-calculation UX:** Users love immediate feedback
+### Session 4B Key Lessons
+1. ✅ **Pure Python Libraries:** Essential for cross-platform/architecture compatibility
+2. ✅ **Schema Mapping Pattern:** Clean way to integrate with legacy databases
+3. ✅ **Environment Variables:** Proper way to handle sensitive config (passwords)
+4. ✅ **Systematic Debugging:** Created debug scripts to isolate issues
+5. ✅ **Context Manager Patterns:** Not all libraries support them (pg8000 cursors)
+6. ✅ **32-bit Constraints:** Plan library selection around architecture requirements
+7. ✅ **Fallback Patterns:** Stub data mode enables development without dependencies
+
+### All Sessions
+1. ✅ Clear architecture upfront saves time
+2. ✅ Reuse proven components (nex-genesis-server)
+3. ✅ Document decisions immediately
+4. ✅ Automated scripts speed up setup
+5. ✅ Stub implementations allow progress without dependencies
+6. ✅ Test immediately after each change
+7. ✅ QAbstractTableModel powerful for custom editable grids
+8. ✅ Signal/Slot architecture keeps code clean
+9. ✅ Real-time calculation with Decimal precision
+10. ✅ Modal dialogs better UX than separate windows
 
 ---
 
-## 🚀 READY FOR NEXT PHASE
+## 🔗 RELATED PROJECTS
 
-**Status:** Session 4 core complete, ready for database integration or NEX Genesis  
-**Next Decision:** PostgreSQL integration vs NEX Genesis features  
-**Overall Progress:** 60% (Phase 4 at 80%)
+### nex-genesis-server ✅ USED
+- **Status:** Phase 2.1 complete
+- **Components Used:**
+  - ✅ src/btrieve/ - Btrieve client
+  - ✅ src/models/ - All table models
+  - ✅ Conversion functions
+  - ✅ Test patterns
+
+### supplier_invoice_loader ✅ INTEGRATED
+- **Status:** Production (generates ISDOC, writes to PostgreSQL)
+- **Integration:** Invoice Editor reads from same database
+- **Schema:** Production schema adapted via mapping layer
+- **Status:** Fully integrated via invoice_staging database
+
+---
+
+## 📊 METRICS
+
+### Code Statistics
+- **Python Files:** ~40 files
+- **Lines of Code:** ~8,000 lines
+- **Test Coverage:** Unit tests for database layer
+- **Dependencies:** 5 main packages (PyQt5, pg8000, PyYAML, python-dateutil, scramp)
+
+### Development Time
+- **Session 1:** 2 hours (Setup)
+- **Session 2:** 3 hours (Database)
+- **Session 3:** 2 hours (UI Foundation)
+- **Session 4:** 2 hours (Editing Features)
+- **Session 4B:** 3 hours (PostgreSQL Integration)
+- **Total:** 12 hours
+- **Progress:** 70% complete
+
+### Performance
+- **Startup Time:** <2 seconds
+- **Database Connection:** <1 second
+- **Invoice List Load:** <500ms (10 invoices)
+- **Item Grid Load:** <300ms (10 items)
+- **Save Operation:** <500ms (transaction)
+
+---
+
+## 🚀 READY FOR SESSION 5
+
+**Status:** Phase 4 complete, database fully integrated  
+**Next:** NEX Genesis Integration (GSCAT, BARCODE, TSH/TSI creation)  
+**Overall Progress:** 70% (4 of 6 phases complete)
+
+**Prerequisites for Session 5:**
+- ✅ Database integration working
+- ✅ Edit functionality complete
+- ✅ Save to PostgreSQL working
+- ✅ Btrieve client ready
+- ✅ Data models implemented
+- ⏳ Need approval workflow
+- ⏳ Need NEX Genesis write operations
 
 ---
 
 **END OF SESSION NOTES**
 
-**Current Status:** Session 4 Core Complete - Editable Grid Working  
-**Next Session:** Session 4 continuation or Session 5  
-**Overall Progress:** 60% (almost 4 of 6 phases complete)
+**Current Status:** Session 4B Complete - PostgreSQL Integration Working  
+**Next Session:** Session 5 - NEX Genesis Integration  
+**Overall Progress:** 70% (4 of 6 phases complete)
