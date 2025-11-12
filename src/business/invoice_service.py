@@ -140,6 +140,142 @@ class InvoiceService:
         Returns:
             List of item dictionaries
         """
+        if self.db_client:
+            try:
+                return self._get_items_from_database(invoice_id)
+            except Exception as e:
+                self.logger.error(f"Database query failed: {e}")
+                self.logger.warning("Falling back to stub data")
+
+        return self._get_stub_items(invoice_id)
+
+    def _get_items_from_database(self, invoice_id: int) -> List[Dict]:
+        """Get items from PostgreSQL (not implemented yet)"""
         # TODO: Implement actual database query
-        self.logger.info(f"Getting items for invoice {invoice_id}")
-        return []
+        # SELECT * FROM invoice_items_pending WHERE invoice_id = ?
+        self.logger.info(f"Database query for items not yet implemented, using stub data")
+        return self._get_stub_items(invoice_id)
+
+    def _get_stub_items(self, invoice_id: int) -> List[Dict]:
+        """Get stub item data for testing"""
+        self.logger.info(f"Using stub items for invoice {invoice_id}")
+
+        # Different items per invoice
+        if invoice_id == 1:
+            return [
+                {
+                    'id': 1,
+                    'invoice_id': 1,
+                    'plu_code': '1001',
+                    'item_name': 'Produkt A',
+                    'category_code': '01',
+                    'unit': 'ks',
+                    'quantity': Decimal('10.000'),
+                    'unit_price': Decimal('15.00'),
+                    'rabat_percent': Decimal('10.0'),
+                    'price_after_rabat': Decimal('13.50'),
+                    'total_price': Decimal('135.00')
+                },
+                {
+                    'id': 2,
+                    'invoice_id': 1,
+                    'plu_code': '1002',
+                    'item_name': 'Produkt B',
+                    'category_code': '02',
+                    'unit': 'ks',
+                    'quantity': Decimal('5.000'),
+                    'unit_price': Decimal('25.00'),
+                    'rabat_percent': Decimal('5.0'),
+                    'price_after_rabat': Decimal('23.75'),
+                    'total_price': Decimal('118.75')
+                }
+            ]
+        elif invoice_id == 2:
+            return [
+                {
+                    'id': 3,
+                    'invoice_id': 2,
+                    'plu_code': '2001',
+                    'item_name': 'Tovar X',
+                    'category_code': '03',
+                    'unit': 'kg',
+                    'quantity': Decimal('20.500'),
+                    'unit_price': Decimal('12.50'),
+                    'rabat_percent': Decimal('15.0'),
+                    'price_after_rabat': Decimal('10.63'),
+                    'total_price': Decimal('217.92')
+                }
+            ]
+        else:
+            # Default items for other invoices
+            return [
+                {
+                    'id': 100 + invoice_id,
+                    'invoice_id': invoice_id,
+                    'plu_code': f'{1000 + invoice_id}',
+                    'item_name': f'Test položka {invoice_id}',
+                    'category_code': '01',
+                    'unit': 'ks',
+                    'quantity': Decimal('1.000'),
+                    'unit_price': Decimal('100.00'),
+                    'rabat_percent': Decimal('0.0'),
+                    'price_after_rabat': Decimal('100.00'),
+                    'total_price': Decimal('100.00')
+                }
+            ]
+
+    def save_invoice(self, invoice_id: int, items: List[Dict]) -> bool:
+        """
+        Save invoice items
+
+        Args:
+            invoice_id: Invoice ID
+            items: List of item dictionaries
+
+        Returns:
+            True if saved successfully
+        """
+        try:
+            self.logger.info(f"Saving invoice {invoice_id} with {len(items)} items")
+
+            if self.db_client:
+                return self._save_to_database(invoice_id, items)
+            else:
+                # Stub mode - just log
+                self.logger.warning("Database not available - changes not saved (stub mode)")
+                self.logger.info(f"Would save {len(items)} items:")
+                for item in items:
+                    self.logger.info(f"  - {item['item_name']}: {item['total_price']}")
+                return True
+
+        except Exception as e:
+            self.logger.exception(f"Failed to save invoice {invoice_id}")
+            return False
+
+    def _save_to_database(self, invoice_id: int, items: List[Dict]) -> bool:
+        """Save items to PostgreSQL (not implemented yet)"""
+        # TODO: Implement actual database update
+        # UPDATE invoice_items_pending SET ... WHERE id = ?
+        self.logger.info("Database save not yet implemented, using stub mode")
+        return True
+
+    def calculate_item_price(self, unit_price: Decimal, rabat_percent: Decimal, 
+                            quantity: Decimal) -> tuple:
+        """
+        Calculate item prices
+
+        Args:
+            unit_price: Unit price
+            rabat_percent: Rabat percentage (0-100)
+            quantity: Quantity
+
+        Returns:
+            Tuple (price_after_rabat, total_price)
+        """
+        price_after_rabat = unit_price * (Decimal('1') - rabat_percent / Decimal('100'))
+        price_after_rabat = price_after_rabat.quantize(Decimal('0.01'))
+
+        total_price = price_after_rabat * quantity
+        total_price = total_price.quantize(Decimal('0.01'))
+
+        return (price_after_rabat, total_price)

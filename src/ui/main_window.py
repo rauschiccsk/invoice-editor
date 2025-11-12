@@ -194,11 +194,27 @@ class MainWindow(QMainWindow):
     def _on_invoice_activated(self, invoice_id):
         """Handle invoice double-click"""
         self.logger.info(f"Invoice activated: {invoice_id}")
-        QMessageBox.information(
-            self,
-            "Detail faktúry",
-            f"Detail faktúry ID {invoice_id} bude dostupný v ďalšej verzii"
+
+        # Open detail window
+        from .invoice_detail_window import InvoiceDetailWindow
+
+        detail_window = InvoiceDetailWindow(
+            self.invoice_service,
+            invoice_id,
+            self
         )
+
+        # Connect save signal
+        detail_window.invoice_saved.connect(self._on_invoice_saved)
+
+        # Show as modal dialog
+        detail_window.exec_()
+
+    def _on_invoice_saved(self, invoice_id):
+        """Handle invoice saved signal"""
+        self.logger.info(f"Invoice {invoice_id} saved, refreshing list")
+        self._load_invoices()
+
 
     def _on_about(self):
         """Show about dialog"""
